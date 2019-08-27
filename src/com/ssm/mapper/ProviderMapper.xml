@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace表示命名空间 -->
+<mapper namespace="com.ssm.mapper.ProviderMapper">
+	<!-- 根据proCode查询对应供应商 -->
+	<select id="selectProviderCode" parameterType="String" resultType="com.ssm.pojo.Provider">
+		select * from smbms_provider 
+		where proCode = #{proCode}
+	</select>
+	
+	<!-- 供应商列表 -->
+	<select id="selectProviderList" resultType="com.ssm.pojo.Provider">
+		select * from smbms_provider 
+	</select>
+	
+	<!-- 多条件查询 -->
+	<!-- 页面搜索功能 -->
+	<select id="selectProviderByCondition" resultType="com.ssm.pojo.Provider">
+		select * from smbms_provider 
+		<where>
+	    	<if test="proCode != null and proCode != ''">
+		         and proCode like concat('%',#{proCode},'%')
+		    </if>
+	    	<if test="proName !=null and proName != ''">
+		         and proName like concat('%',#{proName},'%')
+		    </if>
+		</where>
+	</select>
+	
+	<!-- 添加供应商 -->
+	<insert id="insertProvider" parameterType="com.ssm.pojo.Provider">
+		insert into smbms_provider(proCode,proName,proDesc,proContact,proPhone,proAddress,proFax,createdBy,creationDate)
+    	values(#{proCode},#{proName},#{proDesc},#{proContact},#{proPhone},#{proAddress},#{proFax},#{createdBy},now())
+	</insert>
+	
+	<!-- 修改供应商信息 -->
+	<update id="updateProvider" parameterType="com.ssm.pojo.Provider">
+    	update smbms_provider set
+    	proCode=#{proCode},proName=#{proName},proContact=#{proContact},proPhone=#{proPhone},proAddress=#{proAddress},proFax=#{proFax},proDesc=#{proDesc},modifyBy=#{modifyBy},modifyDate=now() 
+    	where proCode=#{proCode}
+    </update>
+	
+	<!-- 删除供应商 -->
+	<delete id="deleteProvider" parameterType="String">
+		delete from smbms_provider
+		where proCode=#{proCode}
+	</delete>
+	
+	<!-- 列出所有订单 -->
+	<select id="providerList" resultType="Provider">
+		select * from smbms_provider
+	</select>
+	
+</mapper>

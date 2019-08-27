@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace表示命名空间 -->
+<mapper namespace="com.ssm.mapper.BillMapper">
+	<!-- js中搜索所有的roleName -->
+	<select id="selectByProviderId" parameterType="int" resultType="com.ssm.pojo.Bill">
+		select * from smbms_bill
+		where providerId=#{providerId}
+	</select>
+	<!-- 自定义结果集 -->
+	<resultMap type="Bill" id="billMap">
+		<id property="id" column="id"/>
+		<result property="billCode" column="billCode"/>
+		<result property="productName" column="productName"/>
+		<result property="providerName" column="proName"/>
+		<result property="productUnit" column="productUnit"/>
+		<result property="providerId" column="providerId"/>
+		<result property="totalPrice" column="totalPrice"/>
+		<result property="creationDate" column="creationDate"/>
+	</resultMap>
+	
+	<!-- 列出所有订单 -->
+	<select id="billList" resultMap="billMap">
+		select * from smbms_bill b,smbms_provider p
+		where b.providerId = p.id
+	</select>
+	
+	<!-- 根据billCode查询对应订单 -->
+	<select id="selectBillCode" parameterType="String" resultType="bill">
+		select * from smbms_bill 
+		where billCode = #{billCode}
+	</select>
+	
+	<!-- 根据订单id查询订单信息 -->
+	<select id="selectBillById" resultMap="billMap" parameterType="String">
+		select * from smbms_bill b,smbms_provider p
+		where billCode = #{billCode} and b.providerId = p.id
+	</select>
+	
+	<!-- 添加订单 -->
+	<insert id="createBill" parameterType="Bill" >
+		insert into smbms_bill(billCode,productName,productDesc,productUnit,productCount,totalPrice,isPayment,providerId,creationDate,createdBy)
+		values(#{billCode},#{productName},#{productDesc},#{productUnit},#{productCount},#{totalPrice},#{isPayment},#{providerId},now(),#{createdBy})
+	</insert>
+	
+	<!-- 查询供应商 -->
+	<select id="selectProvider" >
+		select id from smbms_provider 
+	</select>
+	
+	<!-- 修改订单 -->
+	<update id="updateBill">
+		update smbms_bill set productName = #{productName},productUnit = #{productUnit},productCount = #{productCount},modifyBy=#{modifyBy},
+			totalPrice = #{totalPrice},providerId = #{providerId},isPayment = #{isPayment},modifyDate = now()
+		where billCode = #{billCode}
+	</update>
+	
+	<!-- 删除订单 -->
+	<delete id="deleteBill">
+		delete from smbms_bill where billCode = #{billCode}
+	</delete>
+	
+	<!-- 条件查询 -->
+	<select id="select" parameterType="Bill" resultMap="billMap">
+		select * from smbms_bill b,smbms_provider p where 1=1
+		<if test="productName != null and productName !=''">
+    		and productName like concat('%',#{productName},'%')
+    	</if>
+    	<if test="providerId != null and providerId != ''">
+    	and providerId=#{providerId}
+    	</if>	
+    	<if test="isPayment != null and isPayment != ''">
+    	and isPayment=#{isPayment}
+    	</if>
+    	and b.providerId = p.id
+	</select>
+</mapper>

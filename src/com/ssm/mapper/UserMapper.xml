@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace表示命名空间 -->
+<mapper namespace="com.ssm.mapper.UserMapper">
+	
+	<!-- js中搜索userCode -->
+	<select id="selectUserCode" parameterType="String" resultType="user">
+		select * from smbms_user
+		where userCode=#{userCode}
+	</select>
+	
+	<!-- 搜索所有用户 -->
+	<select id="selectUserlist" resultType="user">
+		select * from smbms_user;   
+	</select>
+	
+	<!-- 页面搜索功能 -->
+	<select id="selectUserByCondition" resultType="user">
+		select * from smbms_user 
+		<where>
+	    	<if test="userCode != null and userCode != ''">
+		         and userCode like concat('%',#{userCode},'%')
+		    </if>
+	    	<if test="userRole !=null and userRole != ''">
+		         and userRole = #{userRole}
+		    </if>
+		</where>
+	</select>
+	
+    <!-- 添加用户数据 -->
+    <insert id="insertUser" parameterType="user">
+    	insert into smbms_user(userCode,userName,userPassword,gender,birthday,phone,address,userRole,createdBy,creationDate)
+    	values(#{userCode},#{userName},#{userPassword},#{gender},#{birthday},#{phone},#{address},#{userRole},#{createdBy},now())
+    </insert>
+    
+    <!-- 修改用户数据 -->
+    <update id="updateUser" parameterType="user">
+    	update smbms_user set
+    	userName=#{userName},gender=#{gender},birthday=#{birthday},phone=#{phone},address=#{address},userRole=#{userRole},modifyBy=#{modifyBy},modifyDate=now() 
+    	where userCode=#{userCode}
+    </update>
+    
+    <!-- 修改密码 -->
+    <update id="updatePwd" parameterType="user">
+    	update smbms_user set
+    	userPassword=#{userPassword},modifyBy=#{modifyBy},modifyDate=now()
+    	where userCode=#{userCode}
+    </update>
+    
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterType="String">
+	    delete from smbms_user
+	    where userCode=#{userCode}
+    </delete>
+    	
+    
+    
+</mapper>

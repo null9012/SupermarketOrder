@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace表示命名空间 -->
+<mapper namespace="com.ssm.mapper.RoleMapper">
+	<!-- js中搜索所有的roleName -->
+	<select id="selectRoleName" resultType="com.ssm.pojo.Role">
+		select distinct id,roleName from smbms_role
+	</select>
+</mapper>
